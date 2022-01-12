@@ -9,9 +9,9 @@ public class Pruebita {
 
         Juego juego = new Juego();
 
-        //juego.iniciar();
+        juego.iniciar();
 
-        String palabra = "FRESAS";
+        /*String palabra = "FRESAS";
         List<String> secuencia = new ArrayList<>();
         secuencia.add("O");
         secuencia.add("F");
@@ -22,6 +22,8 @@ public class Pruebita {
         secuencia.add("S");
         secuencia.add("E");
         secuencia.add("J");
-        juego.validacionSec(secuencia,palabra);
+        juego.validacionSec(secuencia,palabra);*/
+
+
     }
 }

@@ -9,6 +9,7 @@ public class Juego {
 
     private String[] diccionario;
     private List<String> secuencia;
+    public static Cronometro cronometro = new Cronometro();
 
     public Juego(){
         leerDiccionario();
@@ -49,6 +50,24 @@ public class Juego {
         }
     }
 
+    public void jugar(){
+
+        Turno turno = new Turno(this);
+
+        cronometro.start();
+        turno.start();
+
+        while(cronometro.isAlive()) {
+
+        }
+
+        System.out.println("El tiempo se terminó, presiona enter.");
+
+
+    }
+
+
+
     private void obtenerSecuencia(){
         secuencia = new ArrayList<>();
         String[] vocales = {"A","E","I","O","U"};
@@ -71,6 +90,7 @@ public class Juego {
             System.out.print(" " + letra);
         }
         System.out.println();
+        jugar();
     }
 
     public void validacionSec(List<String> secuencia, String palabra){
