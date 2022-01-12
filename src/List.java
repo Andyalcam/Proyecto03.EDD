@@ -54,9 +54,9 @@ public class List<T> implements TDAList<T>{
         if(this.get(mid) == e){
             return true;
         }else{
-            if(this.get(mid) < e){
+            //if(this.get(mid) < e){
                 System.out.println();
-            }
+            
         }
         return false;
     }
