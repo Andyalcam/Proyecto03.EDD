@@ -1,5 +1,10 @@
 import java.util.Iterator;
-
+/**
+ * Clase que implementa la interfaz TDAList para crear listas simplemente ligadas.
+ * @author Alfonso Mondragon Segoviano
+ * @author Andrea Alvarado Camacho
+ * @version 2.0
+ */
 public class List<T> implements TDAList<T>{
 
     private Node head;
@@ -45,28 +50,12 @@ public class List<T> implements TDAList<T>{
         size = 0;
     }
 
-    public boolean contains(T e){
-        return contains(e, 0, this.size());
-    }
-
-    public boolean contains(T e, int lo, int hi){
-        int mid = (hi-lo)/2;
-        if(this.get(mid) == e){
-            return true;
-        }else{
-            //if(this.get(mid) < e){
-                System.out.println();
-            
-        }
-        return false;
-    }
-
-    /*
+    /**
      * Verifica si un elemento está contenido en la lista.
      *
      * @param e el elemento a verificar si está contenido.
      * @return true si el elemento está contenid, false en otro caso.
-     *
+     */
     @Override
     public boolean contains(T e) {
         Node aux = head;
@@ -82,7 +71,7 @@ public class List<T> implements TDAList<T>{
         }
 
         return false;
-    }*/
+    }
 
     /**
      * Obtiene el elemento en la posición <i>i</i>.
@@ -97,13 +86,13 @@ public class List<T> implements TDAList<T>{
         }else if(isEmpty()){
             return null;
         }else if(i == 0){
-            return head.getElement();
+            return (T) head.getElement();
         }else{
             Node aux = head;
-            for(int j = 0; j < i-1; j++){
+            for(int j = 0; j < i; j++){
                 aux = aux.getNext();
             }
-            return aux.getElement();
+            return (T) aux.getElement();
         }
     }
 
@@ -120,6 +109,26 @@ public class List<T> implements TDAList<T>{
     /**
      * Elimina el elemento en la posición <i>i</i>.
      *
+     * @param e el elemento a eliminar.
+     * @throws IndexOutOfBoundException si el índice está fuera de rango.
+     */
+    public void remove(T e) throws IndexOutOfBoundsException{
+        Node aux = head;
+        if(isEmpty()){
+            throw new IndexOutOfBoundsException();
+        }
+
+        for(int i = 0; i < size; i++){
+            if(aux.getElement().equals(e)){
+                remove(i);
+            }
+            aux = aux.getNext();
+        }
+    }
+
+    /**
+     * Elimina el elemento en la posición <i>i</i>.
+     *
      * @param i el índice del elemento a eliminar.
      * @return el elemento eliminado.
      * @throws IndexOutOfBoundException si el índice está fuera de rango.
@@ -129,27 +138,26 @@ public class List<T> implements TDAList<T>{
         if(i < 0 || i > size ){
             throw new IndexOutOfBoundsException();
         }
+        T element;
         // Eliminar la cabeza
         if(i == 0){
-            T element = head.getElement();
+            element = (T) head.getElement();
             if(size == 1){
                 head = null;
             }else{
                 head = head.getNext();
             }
-            size--;
-            return element;
         }else{
             Node aux = head;
             for(int j = 0; j < i-1; j++){
                 aux = aux.getNext();
             }
-
+            element = (T) aux.getNext().getElement();
             aux.setNext(aux.getNext().getNext());
 
-            size--;
-            return aux.getElement();
         }
+        size--;
+        return element;
     }
 
     /**
@@ -193,38 +201,59 @@ public class List<T> implements TDAList<T>{
     }
 
 
+    // Clase Node encargada de implementar la lista simplemente ligada.
     public class Node{
 
         T element;
         Node next;
 
+        /**
+         * Constructor para crear un nodo.
+         * @param element - objeto de tipo generico.
+         */
         public Node(T element) {
             this.element = element;
         }
 
+        /**
+         * Metodo para obtener el elemento del nodo.
+         * @return T - objeto de tipo generico que representa el nodo.
+         */
         public T getElement() {
             return element;
         }
 
+        /**
+         * Metodo que regresa el nodo siguiente respecto a uno.
+         * @return Node - nodo siguiente.
+         */
         public Node getNext() {
             return next;
         }
 
+        /**
+         * Metodo para asignarle a un nodo un nodo siguiente.
+         * @param next - objeto de tipo nodo.
+         */
         public void setNext(Node next) {
             this.next = next;
         }
     }
 
+    /**
+     * Método para imprimir la lista simplemente ligada.
+     * @return String - con la cadena de elementos que contiene la lista y si es vacía, lo indica.
+     */
     @Override
     public String toString() {
         if(!isEmpty()) {
-            String result = "";
+            StringBuilder result = new StringBuilder();
             Node aux = head;
             while (aux != null) {
-                result += aux.getElement() + ", ";
+                result.append(aux.getElement()).append(" ");
                 aux = aux.getNext();
             }
-            return result.substring(0, result.length() - 2);
+            return result.substring(0, result.length() - 1);
         }
         return "La lista es vacía";
     }

@@ -1,11 +1,11 @@
 import java.util.Iterator;
 
 /**
-* TDA para listas.
-* @author Emmanuel Cruz Hernández.
-* @version 3.0 Octubre 2021.
-* @since Estructuras de datos 2022-1. Prática 2.
-*/
+ * TDA para listas.
+ * @author Emmanuel Cruz Hernández.
+ * @version 3.0 Octubre 2021.
+ * @since Estructuras de datos 2022-1. Prática 2.
+ */
 public interface TDAList<T>{
 
 	/**

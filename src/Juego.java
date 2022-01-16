@@ -1,8 +1,5 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
 public class Juego {
@@ -14,7 +11,25 @@ public class Juego {
     public Juego(){
         leerDiccionario();
         obtenerSecuencia();
-        Collections.shuffle(secuencia);
+        revolver();
+    }
+
+    /**
+     * Método que genera números aleatorios entre 0 y max.
+     */
+    private int random(int max) {
+        return (int) Math.round(Math.random() * max + 0.5);
+    }
+
+    /**
+     * Método para revolver los elementos de la secuencia
+     */
+    public void revolver(){
+        for(int i = 0; i < secuencia.size(); i++){
+            int numRan = random(secuencia.size()-1);
+            String temporal = secuencia.remove(numRan);
+            secuencia.add(0,temporal);
+        }
     }
 
     public void setSecuencia(List<String> secuencia) {
@@ -69,63 +84,97 @@ public class Juego {
 
 
     private void obtenerSecuencia(){
-        secuencia = new ArrayList<>();
+        secuencia = new List();
         String[] vocales = {"A","E","I","O","U"};
         Random random = new Random();
         for (int i = 0; i < 3; i++) {
             int rnd = random.nextInt(5);
-            secuencia.add(vocales[rnd]);
+            secuencia.add(0,vocales[rnd]);
         }
 
         for (int i = 0; i < 6; i++) {
             int rnd2 = random.nextInt(26) + 65;
-            secuencia.add((char)(rnd2)+"");
+            secuencia.add(0,(char)(rnd2)+"");
         }
-
     }
 
     public void iniciar(){
-        System.out.print("Tu secuencia de letras es:");
-        for (String letra : secuencia) {
-            System.out.print(" " + letra);
-        }
+        System.out.print("Tu secuencia de letras es: ");
+        //for (int i=0; i<secuencia.size(); i++) {
+            System.out.print(secuencia);
+        //}
         System.out.println();
         jugar();
     }
 
     public void validacionSec(List<String> secuencia, String palabra){
+        palabra = palabra.toUpperCase();
+        List<String> secAux = secuencia;
         boolean valida = false;
         char[] letras =palabra.toCharArray();
-        //siguiente:
         for(int i=0; i<letras.length; i++){
             String aux = letras[i] + "";
-            System.out.println(aux + " " + secuencia.contains(aux));
-            if(secuencia.contains(aux)){
+            if(secAux.contains(aux)){
+                secAux.remove(aux);
                 valida = true;
             }else{
+                valida = false;
                 System.out.println("Tu palabra no es válida");
                 break;
             }
-            /*for(int j=0; j< secuencia.size(); j++){
-                String aux = letras[i] + "";
-                if (aux.equalsIgnoreCase(secuencia.get(j))){
-                    //System.out.println("Tu palabra es válida");
-                    //continue siguiente;
-                    break;
-                }else{
-                    System.out.println("Tu palabra no es valida, la letra " + aux + " no pertenece a tu secuencia original");
-                    break;
-                }
-            }*/
         }
         if (valida){
-            System.out.println("Tu palabra es válida");
+            palabra = palabra.toLowerCase();
+            String[] arreglito = getDiccionario();
+            int indice = find(arreglito,palabra);
+            System.out.printf(indice + "");
+            if(indice != -1){
+                System.out.println(" " + arreglito[indice]);
+                System.out.println("Tu palabra es válida");
+            }else {
+                System.out.println("Tu palabra no es válida, no esta en el diccionario");
+            }
+        }
+    }
+
+    /**
+     * Método que busca la posición del elemento que quieras buscar (para el usuario).
+     * @param arr - arreglo en el que buscaremos.
+     * @param elem - elemento a buscar.
+     * @return la posición del elemento a buscar.
+     * -1 si no existe el elemento en el arreglo.
+     */
+    public int find(String[] arr, String elem){
+        return find(arr, elem, 0, arr.length - 1);
+    }
+
+    /**
+     * Método para buscar un elemento en un arreglo.
+     * @param arr - arreglo en el que se va a buscar.
+     * @param elem - elemento que buscamos.
+     * @param lo - índice de inicio.
+     * @param hi - índice de fin.
+     * @return la posición del elemento que buscamos.
+     * -1 si el elemento no existe en el arreglo.
+     */
+    private int find ( String[] arr, String elem, int lo, int hi){
+        if (lo > hi) { //Si no existe el elemento
+            return -1;
         }
 
-        /*String palabraDiccionario = "";
-        if(palabra.equalsIgnoreCase(palabraDiccionario)){
+        int mid = lo + ((hi - lo) / 2);
 
-        }*/
+        if (arr[mid].compareTo(elem) == 0) {//Si el elemento es mid
+            System.out.println("mid: " + mid + ", lo: " + lo + ", hi: " + hi + ", arreglo: " + arr[mid] + " - elemento: " + elem);
+            return mid;
+        }
+        if (arr[mid].compareTo(elem) < 0) { //Buscamos en la parte de la derecha
+            System.out.println("mid: " + mid + ", lo: " + lo + ", hi: " + hi + ", arreglo: " + arr[mid] + " - elemento: " + elem);
+            return find(arr, elem, mid + 1, hi);
+        } else { //Buscamos en la parte de la izquierda
+            System.out.println("mid: " + mid + ", lo: " + lo + ", hi: " + hi + ", arreglo: " + arr[mid] + " - elemento: " + elem);
+            return find(arr, elem, lo, mid - 1);
+        }
     }
 
 }
