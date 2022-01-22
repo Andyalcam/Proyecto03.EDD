@@ -14,7 +14,8 @@ public class Turno extends Thread{
             Scanner in = new Scanner(System.in);
             System.out.println("Ingresa una palabra");
             String aux = in.nextLine();
-            juego.validacionSec(juego.getSecuencia(), aux);
+            System.out.println("ssecuencia: "+juego.getSecuencia());
+            juego.validacionSec(aux);
         }
     }
 
