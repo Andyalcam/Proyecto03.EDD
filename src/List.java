@@ -121,6 +121,7 @@ public class List<T> implements TDAList<T>{
         for(int i = 0; i < size; i++){
             if(aux.getElement().equals(e)){
                 remove(i);
+                return;
             }
             aux = aux.getNext();
         }

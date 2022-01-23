@@ -12,7 +12,7 @@ public class Juego {
     private List<String> jugadores;
     private List<String> puntuaciones;
     private int puntuación;
-    public static Cronometro cronometro = new Cronometro();
+    public static Cronometro cronometro;
     private Scanner in = new Scanner(System.in);
 
     public Juego(List<String> jugadores){
@@ -72,9 +72,9 @@ public class Juego {
     }
 
     public void jugar(){
-
+        System.out.println("Tu secuencia es: " + secuencia);
+        cronometro = new Cronometro();
         cronometro.start();
-        //turno.start();
 
         while(cronometro.isAlive()) {
             Scanner in = new Scanner(System.in);
@@ -105,39 +105,58 @@ public class Juego {
     }
 
     public void iniciar(){
-
         for(int i = 0; i < jugadores.size(); i++){
-            System.out.println("Es turno de " + jugadores.get(i) + ". Selecciona una opción");
-            System.out.println("1. Introducir Secuencia \n2. Secuencia Aleatoria");
-            int opc = in.nextInt();
+            int opc = 0;
+            boolean repe;
+            do {
+                try {
+                    System.out.println("Es turno de " + jugadores.get(i) + ". Selecciona una opción");
+                    System.out.println("1. Introducir Secuencia \n2. Secuencia Aleatoria");
+                    repe = false;
+                    opc = in.nextInt();
+
+                    if(opc != 1 && opc != 2){
+                        throw new IllegalArgumentException();
+                    }
+
+                } catch (Exception e) {
+                    System.out.println("Ingresa solo números");
+                    repe = true;
+                    in.next();
+                }
+            }while(repe);
+
             if(opc == 1){
                 Scanner scanner = new Scanner(System.in);
-                System.out.println("Ingresa la secuencia de 9 letras separado por comas Ej. A,B,C,D");
-                String sec = scanner.nextLine();
-                sec = sec.toUpperCase();
-                String[] arrSecuencia = sec.split(",");
-                secuencia.clear();
-                for (String letra : arrSecuencia){
-                    secuencia.add(0,letra);
-                }
+                do {
+                    try {
+                        System.out.println("Ingresa la secuencia de 9 letras Ej. OFIARASEJ");
+                        String sec = scanner.nextLine();
+                        if(sec.length() != 9){
+                            throw new IllegalArgumentException();
+                        }
+                        sec = sec.toUpperCase();
+                        char[] arrSecuencia = sec.toCharArray();
+                        secuencia.clear();
+                        for (char letra : arrSecuencia) {
+                            secuencia.add(0, letra + "");
+                        }
+                        repe = false;
+                    } catch (Exception e) {
+                        System.out.println("Ingresa lo que se te pide no seas naco");
+                        repe = true;
+                    }
+                }while(repe);
             }else if(opc == 2){
                 obtenerSecuencia();
                 revolver();
             }else{
-                System.out.println("Fakiu");
+
             }
 
             jugar();
 
         }
-
-
-
-
-        /*System.out.print("Tu secuencia de letras es: ");
-        System.out.print(secuencia);
-        System.out.println();
-        jugar();*/
     }
 
     public boolean validacionSec(String palabra){
@@ -147,11 +166,12 @@ public class Juego {
         for (int i = 0; i < secuencia.size(); i++) {
             secAux.add(0,secuencia.get(i));
         }
+
         boolean valida = false;
         char[] letras = auxPalabra.toCharArray();
+
         for(int i=0; i<letras.length; i++){
             String aux = letras[i] + "";
-            System.out.println(aux + " - " + secAux.contains(aux));
             if(secAux.contains(aux)){
                 secAux.remove(aux);
                 valida = true;
@@ -162,6 +182,7 @@ public class Juego {
                 break;
             }
         }
+
         if(valida){
             palabra = palabra.toLowerCase();
             String[] arreglito = getDiccionario();
