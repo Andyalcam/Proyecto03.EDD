@@ -51,13 +51,65 @@ public class List<T> implements TDAList<T>, Serializable {
     }
 
     /**
-     * Inserta un nuevo elemento <i>e</i> en la posición <i>i</i>.
+     * Inserta un nuevo elemento <i>e</i> al final de la lista.
      *
      * @param e el elemento a insertar.
-     * @throws IndexOutOfBoundsException si el índice está fuera de rango.
      */
-    public void add(T e) throws IndexOutOfBoundsException {
+    public void add(T e) {
         add(size,e);
+    }
+
+    /**
+     * Inserta un nuevo elemento <i>e</i> en orden de mayor a menor.
+     *
+     * @param e el elemento a insertar.
+     */
+    public void addScore(T e){
+        Node newNode = new Node(e);
+
+        if(isEmpty()){
+            head = newNode;
+        }else{
+            Node nodeAux = head;
+            Node iterator = head;
+            System.out.println();
+            while (nodeAux != null) {
+                if ((int) newNode.getElement() > (int) nodeAux.getElement()) {
+                    if(nodeAux == head){
+                        newNode.setNext(head);
+                        head = newNode;
+                        return;
+                    }else{
+                        while (iterator.getNext() != nodeAux) {
+                            iterator = iterator.getNext();
+                        }
+                        newNode.setNext(iterator.getNext());
+                        iterator.setNext(newNode);
+                        return;
+                    }
+                }else if ((int) newNode.getElement() == (int) nodeAux.getElement()) {
+                    if (nodeAux == head) {
+                        newNode.setNext(head.getNext());
+                        head.setNext(newNode);
+                        return;
+                    } else {
+                        while (iterator.getNext() != nodeAux) {
+                            iterator = iterator.getNext();
+                        }
+                        newNode.setNext(iterator.getNext());
+                        iterator.setNext(newNode);
+                        return;
+                    }
+                } else {
+                    if(nodeAux.getNext() == null) {
+                        nodeAux.setNext(newNode);
+                        return;
+                    }
+                }
+                nodeAux = nodeAux.getNext();
+            }
+        }
+        size++;
     }
 
     /**
@@ -90,28 +142,6 @@ public class List<T> implements TDAList<T>, Serializable {
         }
 
         return false;
-    }
-
-    /**
-     * Elimina el elemento en la posición <i>i</i>.
-     *
-     * @param e el elemento a eliminar.
-     * @throws NullPointerException si el elemento no se encuentra en la lista.
-     */
-    public int get(T e) throws NullPointerException{
-        Node aux = head;
-        int indice = -1;
-        if(isEmpty()){
-            throw new NullPointerException();
-        }
-
-        for(int i = 0; i < size; i++){
-            if(aux.getElement().equals(e)){
-                indice = i;
-            }
-            aux = aux.getNext();
-        }
-        return indice;
     }
 
     /**
@@ -148,7 +178,7 @@ public class List<T> implements TDAList<T>, Serializable {
     }
 
     /**
-     * Elimina el elemento en la posición <i>i</i>.
+     * Elimina el elemento <i>e</i> de la lista.
      *
      * @param e el elemento a eliminar.
      * @throws NullPointerException si el elemento no se encuentra en la lista.
@@ -200,6 +230,24 @@ public class List<T> implements TDAList<T>, Serializable {
         }
         size--;
         return element;
+    }
+
+    /**
+     * Metodo que verifica si dos listas son iguales o no
+     * @param lista - Lista con la que se va a comparar
+     * @return boolean - true si son iguales, false en caso contrario
+     */
+    public boolean comparar(List<T> lista){
+        if(size != lista.size()){
+            return false;
+        }
+        for (int i = 0; i < size; i++) {
+            if(!get(i).equals(lista.get(i))){
+                return false;
+            }
+
+        }
+        return true;
     }
 
     /**
@@ -283,7 +331,7 @@ public class List<T> implements TDAList<T>, Serializable {
     }
 
     /**
-     * Método para imprimir la lista simplemente ligada.
+     * Método para imprimir la lista simplemente ligada. Separada por espacios
      * @return String - con la cadena de elementos que contiene la lista y si es vacía, lo indica.
      */
     @Override
@@ -292,7 +340,7 @@ public class List<T> implements TDAList<T>, Serializable {
             StringBuilder result = new StringBuilder();
             Node aux = head;
             while (aux != null) {
-                result.append(aux.getElement()).append(" ");
+                result.append(aux.getElement()+"").append(" ");
                 aux = aux.getNext();
             }
             return result.substring(0, result.length() - 1);
@@ -301,7 +349,7 @@ public class List<T> implements TDAList<T>, Serializable {
     }
 
     /**
-     * Método para imprimir la lista simplemente ligada.
+     * Método para imprimir la lista simplemente ligada. Separada por comas.
      * @return String - con la cadena de elementos que contiene la lista y si es vacía, lo indica.
      */
     public String toStringAux() {
@@ -309,16 +357,16 @@ public class List<T> implements TDAList<T>, Serializable {
             StringBuilder result = new StringBuilder();
             Node aux = head;
             while (aux != null) {
-                result.append(aux.getElement()).append(", ");
+                result.append(aux.getElement()+"").append(", ");
                 aux = aux.getNext();
             }
-            return result.substring(0, result.length() - 1);
+            return result.substring(0, result.length() - 1);//String.valueOf(result);
         }
         return "La lista es vacía";
     }
 
     /**
-     * Método para imprimir la lista simplemente ligada.
+     * Método para imprimir la lista simplemente ligada. Separada por enters
      * @return String - con la cadena de elementos que contiene la lista y si es vacía, lo indica.
      */
     public String toStringAuxx() {
@@ -326,7 +374,7 @@ public class List<T> implements TDAList<T>, Serializable {
             StringBuilder result = new StringBuilder();
             Node aux = head;
             while (aux != null) {
-                result.append(aux.getElement()).append("\n");
+                result.append(aux.getElement()+"").append("\n");
                 aux = aux.getNext();
             }
             return result.substring(0, result.length() - 1);

@@ -4,7 +4,12 @@ import java.text.Normalizer;
 import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
-
+/**
+ * Clase de juego Scrabble
+ * @author Andrea Alvarado Camacho
+ * @author Alfonso Mondragón Segoviano
+ * @version 1.0
+ */
 public class Juego {
 
     Utilidades util = new Utilidades();
@@ -13,17 +18,18 @@ public class Juego {
     private String[] diccionario;
     private List<String> secuencia;
     private List<String> palabras;
-    private List<String> puntuaciones;
     private int puntuacion;
     public static Cronometro cronometro;
     private Scanner in = new Scanner(System.in);
 
+    /**
+     * Constructor para crear el juego.
+     */
     public Juego(){
         leerDiccionario();
         palabras = new List<>();
-        puntuaciones = new List();
         secuencia = new List<>();
-        estadisticas  = util.leerObjetoArchivo("src/estadisticas.txt");
+        estadisticas  = util.leerObjetoLista("src/estadisticas.txt");
     }
 
     /**
@@ -34,7 +40,7 @@ public class Juego {
     }
 
     /**
-     * Método para revolver los elementos de la secuencia
+     * Método para revolver los elementos de la secuencia.
      */
     public void revolver(){
         for(int i = 0; i < secuencia.size(); i++){
@@ -44,18 +50,25 @@ public class Juego {
         }
     }
 
+    /**
+     * Método para obtener el diccionario de palabras.
+     * @return diccionario de palabras.
+     */
     public String[] getDiccionario() {
         return diccionario;
     }
 
+    /**
+     * Método para obtener la secuencia con la que se está jugando.
+     * @return secuencia con la que se juega.
+     */
     public List<String> getSecuencia() {
         return secuencia;
     }
 
-    public int getPuntuacion() {
-        return puntuacion;
-    }
-
+    /**
+     * Método para leer el diccionario de palabras que esta guardado en un txt.
+     */
     private void leerDiccionario(){
         int contador = 0;
         try {
@@ -74,6 +87,9 @@ public class Juego {
         }
     }
 
+    /**
+     * Método que inicializa hilos y demás componentes para poder realizar el juego.
+     */
     public void jugar(){
         cronometro = new Cronometro();
         cronometro.start();
@@ -89,25 +105,31 @@ public class Juego {
             validacionSec(aux);
         }
         System.out.println("Puntuacion Final: " + puntuacion);
+
         for (int i = 0; i < estadisticas.size(); i++) {
-            if (estadisticas.get(i).getSecuencia().equals(secuencia)){
+            if (estadisticas.get(i).getSecuencia().comparar(secuencia)){
                 estadisticas.get(i).addPuntos(puntuacion);
-                util.escribirObjetosArchivo("src/estadisticas.txt", estadisticas);
+                util.escribirObjetosLista("src/estadisticas.txt", estadisticas);
                 return;
             }
         }
         Puntaje newPuntos = new Puntaje(secuencia,puntuacion);
-        estadisticas = util.agregarArreglo(newPuntos);
-        util.escribirObjetosArchivo("src/estadisticas.txt", estadisticas);
+        estadisticas = util.agregarLista(newPuntos);
+        util.escribirObjetosLista("src/estadisticas.txt", estadisticas);
 
     }
 
+    /**
+     * Método para obtener las estadísticas del juego.
+     * @return Estadísticas del juego.
+     */
     public String obtenerEstadisticas(){
             return estadisticas.toStringAuxx();
     }
 
-
-
+    /**
+     * Método auxiliar para crear una secuencia aleatoria.
+     */
     private void obtenerSecuencia(){
         secuencia = new List();
         String[] vocales = {"A","E","I","O","U"};
@@ -123,8 +145,10 @@ public class Juego {
         }
     }
 
+    /**
+     * Método que inicializa el juego.
+     */
     public void iniciar(){
-        //for(int i = 0; i < jugadores.size(); i++){
             int opc = 0;
             boolean repe;
             do {
@@ -172,9 +196,12 @@ public class Juego {
                 revolver();
             }
             jugar();
-        //}
     }
 
+    /**
+     * Método auxiliar para saber si la palabra ingresada es válida.
+     * @param palabra Palabra que se validará.
+     */
     public void validacionSec(String palabra){
         String auxPalabra = cleanString(palabra);
         auxPalabra = auxPalabra.toUpperCase();
@@ -211,6 +238,10 @@ public class Juego {
         }
     }
 
+    /**
+     * Método que ayuda a puntuar la palabra en caso de ser válida.
+     * @param palabra Palabra válida.
+     */
     private void puntuar(String palabra) {
         if(!palabras.contains(palabra)){
             int puntos = (int) Math.pow(palabra.length(),2);
@@ -250,14 +281,11 @@ public class Juego {
         int mid = lo + ((hi - lo) / 2);
 
         if (arr[mid].compareTo(elem) == 0) {//Si el elemento es mid
-            //System.out.println("mid: " + mid + ", lo: " + lo + ", hi: " + hi + ", arreglo: " + arr[mid] + " - elemento: " + elem);
             return mid;
         }
         if (cleanString(arr[mid]).compareTo(cleanString(elem)) < 0) { //Buscamos en la parte de la derecha
-            //System.out.println("mid: " + mid + ", lo: " + lo + ", hi: " + hi + ", arreglo: " + arr[mid] + " - elemento: " + elem);
             return find(arr, elem, mid + 1, hi);
         } else { //Buscamos en la parte de la izquierda
-            //System.out.println("mid: " + mid + ", lo: " + lo + ", hi: " + hi + ", arreglo: " + arr[mid] + " - elemento: " + elem);
             return find(arr, elem, lo, mid - 1);
         }
     }

@@ -1,45 +1,24 @@
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
+/**
+ * Clase main encargada de simular el juego para interactuar con el usuario
+ * @author Andrea Alvarado Camacho
+ * @author Alfonso Mondragón Segoviano
+ * @version 1.0
+ */
 public class Main {
     public static void main(String[] args) {
 
-        Scanner in = new Scanner(System.in);
         Scanner on = new Scanner(System.in);
 
-        List<String> jugadores = new List<>();
-
-        int opc,numJugadores=0;
-        boolean volver = true, excep, repe;
+        int opc;
+        boolean excep;
 
         try {
             System.out.println("\t*** BIENVENIDO ***");
-            //do {
-                /*do {
-                    try {
-                        System.out.println("\nIngresa el numero de jugadores (1 - 4 jugadores)");
-                        numJugadores = in.nextInt();
-                        if (numJugadores <= 4 && numJugadores >= 1) {
-                            repe = false;
-                        } else {
-                            System.out.println("Solo pueden jugar de 1 a 4 jugadores");
-                            repe = true;
-                        }
-                    }catch (Exception e){
-                        System.out.println("Debes ingresar un número");
-                        repe = true;
-                        in.next();
-                    }
-                }while (repe);
-                for (int i=1; i<=numJugadores; i++){
-                    jugadores.add(0, "Jugador " + i);
-                }*/
-                Juego juego = new Juego();
-                //juego.iniciar();
-                //System.out.println("\nEl juego terminó...\t¿Qué deseas hacer?\n");
-
                 excep = true;
                 while (excep) {
+                    Juego juego = new Juego();
                     try {
                         System.out.println("\n\t\t*** Menu ***");
                         System.out.println("--------------------------------------------");
@@ -57,12 +36,10 @@ public class Main {
                                 System.out.println("\nEl juego terminó...\t¿Qué deseas hacer?\n");
                                 break;
                             case 2:
-                                System.out.println("Aqui estan las estadisticas");
-                                System.out.println(juego.obtenerEstadisticas());
+                                System.out.println("\n" + juego.obtenerEstadisticas());
                                 break;
                             case 3:
                                 System.out.println("Ayoos :3");
-                                //volver = false;
                                 excep = false;
                                 break;
                             default:
@@ -74,7 +51,6 @@ public class Main {
                         on.next();
                     }
                 }
-            //} while (volver);
         }catch (Exception e){
             e.printStackTrace();
             System.out.println("Ingresa un diccionario válido");
