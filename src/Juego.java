@@ -1,26 +1,29 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.text.Normalizer;
+import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
 
 public class Juego {
 
+    Utilidades util = new Utilidades();
+    public List<Puntaje> estadisticas;
+
     private String[] diccionario;
     private List<String> secuencia;
     private List<String> palabras;
-    private List<String> jugadores;
     private List<String> puntuaciones;
-    private int puntuación;
+    private int puntuacion;
     public static Cronometro cronometro;
     private Scanner in = new Scanner(System.in);
 
-    public Juego(List<String> jugadores){
+    public Juego(){
         leerDiccionario();
-        this.jugadores = jugadores;
         palabras = new List<>();
         puntuaciones = new List();
         secuencia = new List<>();
+        estadisticas  = util.leerObjetoArchivo("src/estadisticas.txt");
     }
 
     /**
@@ -37,7 +40,7 @@ public class Juego {
         for(int i = 0; i < secuencia.size(); i++){
             int numRan = random(secuencia.size()-1);
             String temporal = secuencia.remove(numRan);
-            secuencia.add(0,temporal);
+            secuencia.add(temporal);
         }
     }
 
@@ -49,8 +52,8 @@ public class Juego {
         return secuencia;
     }
 
-    public int getPuntuación() {
-        return puntuación;
+    public int getPuntuacion() {
+        return puntuacion;
     }
 
     private void leerDiccionario(){
@@ -72,19 +75,35 @@ public class Juego {
     }
 
     public void jugar(){
-        System.out.println("Tu secuencia es: " + secuencia);
         cronometro = new Cronometro();
         cronometro.start();
+        puntuacion = 0;
+        palabras.clear();
 
         while(cronometro.isAlive()) {
+            System.out.println("Tu secuencia es: " + secuencia);
             Scanner in = new Scanner(System.in);
             System.out.println("Ingresa una palabra");
             String aux = in.nextLine();
+            clear();
             validacionSec(aux);
         }
+        System.out.println("Puntuacion Final: " + puntuacion);
+        for (int i = 0; i < estadisticas.size(); i++) {
+            if (estadisticas.get(i).getSecuencia().equals(secuencia)){
+                estadisticas.get(i).addPuntos(puntuacion);
+                util.escribirObjetosArchivo("src/estadisticas.txt", estadisticas);
+                return;
+            }
+        }
+        Puntaje newPuntos = new Puntaje(secuencia,puntuacion);
+        estadisticas = util.agregarArreglo(newPuntos);
+        util.escribirObjetosArchivo("src/estadisticas.txt", estadisticas);
 
-        System.out.println("Puntuacion Final: " + puntuación);
+    }
 
+    public String obtenerEstadisticas(){
+            return estadisticas.toStringAuxx();
     }
 
 
@@ -95,34 +114,35 @@ public class Juego {
         Random random = new Random();
         for (int i = 0; i < 3; i++) {
             int rnd = random.nextInt(5);
-            secuencia.add(0,vocales[rnd]);
+            secuencia.add(vocales[rnd]);
         }
 
         for (int i = 0; i < 6; i++) {
             int rnd2 = random.nextInt(26) + 65;
-            secuencia.add(0,(char)(rnd2)+"");
+            secuencia.add((char)(rnd2)+"");
         }
     }
 
     public void iniciar(){
-        for(int i = 0; i < jugadores.size(); i++){
+        //for(int i = 0; i < jugadores.size(); i++){
             int opc = 0;
             boolean repe;
             do {
                 try {
-                    System.out.println("Es turno de " + jugadores.get(i) + ". Selecciona una opción");
+                    System.out.println("Selecciona una opción");
                     System.out.println("1. Introducir Secuencia \n2. Secuencia Aleatoria");
-                    repe = false;
                     opc = in.nextInt();
-
                     if(opc != 1 && opc != 2){
                         throw new IllegalArgumentException();
                     }
-
-                } catch (Exception e) {
-                    System.out.println("Ingresa solo números");
-                    repe = true;
+                    repe = false;
+                } catch (InputMismatchException e) {
+                    System.out.println("\tIngresa solo números\n");
                     in.next();
+                    repe = true;
+                } catch (IllegalArgumentException e){
+                    System.out.println("\tSolo debes ingresar 1 o 2\n");
+                    repe = true;
                 }
             }while(repe);
 
@@ -139,27 +159,23 @@ public class Juego {
                         char[] arrSecuencia = sec.toCharArray();
                         secuencia.clear();
                         for (char letra : arrSecuencia) {
-                            secuencia.add(0, letra + "");
+                            secuencia.add( letra + "");
                         }
                         repe = false;
                     } catch (Exception e) {
-                        System.out.println("Ingresa lo que se te pide no seas naco");
+                        System.out.println("\tIngresa lo que se te pide. Sigue el ejemplo\n");
                         repe = true;
                     }
                 }while(repe);
-            }else if(opc == 2){
+            }else {
                 obtenerSecuencia();
                 revolver();
-            }else{
-
             }
-
             jugar();
-
-        }
+        //}
     }
 
-    public boolean validacionSec(String palabra){
+    public void validacionSec(String palabra){
         String auxPalabra = cleanString(palabra);
         auxPalabra = auxPalabra.toUpperCase();
         List<String> secAux = new List<>();
@@ -170,12 +186,12 @@ public class Juego {
         boolean valida = false;
         char[] letras = auxPalabra.toCharArray();
 
-        for(int i=0; i<letras.length; i++){
-            String aux = letras[i] + "";
-            if(secAux.contains(aux)){
+        for (char letra : letras) {
+            String aux = letra + "";
+            if (secAux.contains(aux)) {
                 secAux.remove(aux);
                 valida = true;
-            }else{
+            } else {
                 System.out.println("La letra que no esta es : " + aux);
                 valida = false;
                 System.out.println("Tu palabra no es válida");
@@ -189,20 +205,17 @@ public class Juego {
             int indice = find(arreglito,palabra);
             if(indice != -1){
                 puntuar(palabra);
-                return true;
             }else {
                 System.out.println("Tu palabra no es válida, no esta en el diccionario");
-                return false;
             }
         }
-        return false;
     }
 
     private void puntuar(String palabra) {
         if(!palabras.contains(palabra)){
             int puntos = (int) Math.pow(palabra.length(),2);
-            puntuación += puntos;
-            palabras.add(0,palabra);
+            puntuacion += puntos;
+            palabras.add(palabra);
             System.out.println("Tu palabra es válida, sumas " + puntos + " puntos.");
         }else{
             System.out.println("Tu palabra es válida, pero ya fue ingresada, sumas 0 puntos");
@@ -253,6 +266,26 @@ public class Juego {
         texto = Normalizer.normalize(texto, Normalizer.Form.NFD);
         texto = texto.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
         return texto;
+    }
+
+    /**
+     * Método para limpiar la terminal.
+     */
+    public void clear(){
+        try{
+            String operatingSystem = System.getProperty("os.name"); //Check the current operating system
+            if(operatingSystem.contains("Windows")){
+                ProcessBuilder pb = new ProcessBuilder("cmd", "/c", "cls");
+                Process startProcess = pb.inheritIO().start();
+                startProcess.waitFor();
+            } else {
+                ProcessBuilder pb = new ProcessBuilder("clear");
+                Process startProcess = pb.inheritIO().start();
+                startProcess.waitFor();
+            }
+        }catch(Exception e){
+            System.out.println(e);
+        }
     }
 
 }

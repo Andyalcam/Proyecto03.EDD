@@ -1,11 +1,12 @@
+import java.io.Serializable;
 import java.util.Iterator;
 /**
  * Clase que implementa la interfaz TDAList para crear listas simplemente ligadas.
  * @author Alfonso Mondragon Segoviano
  * @author Andrea Alvarado Camacho
- * @version 2.0
+ * @version 2.1
  */
-public class List<T> implements TDAList<T>{
+public class List<T> implements TDAList<T>, Serializable {
 
     private Node head;
     private int size;
@@ -15,7 +16,7 @@ public class List<T> implements TDAList<T>{
      *
      * @param i la posición donde agregar el elemento.
      * @param e el elemento a insertar.
-     * @throws IndexOutOfBoundException si el índice está fuera de rango.
+     * @throws IndexOutOfBoundsException si el índice está fuera de rango.
      */
     @Override
     public void add(int i, T e) throws IndexOutOfBoundsException {
@@ -30,7 +31,15 @@ public class List<T> implements TDAList<T>{
         }else if(i == 0){//Si se va agregar al inicio
             newNode.setNext(head);
             head = newNode;
-        }else{//Cuando se agrega en cualquier otra posición
+        }else if(i == size) { //Cuando se agrega al final
+            Node iterator = head;
+            Node last = iterator;
+            while (iterator!=null){
+                last = iterator;
+                iterator = iterator.getNext();
+            }
+            last.setNext(newNode);
+        }else {//Cuando se agrega en cualquier otra posición
             Node iterator = head;
             for(int j = 0; j < i; j++){
                 iterator = iterator.getNext();
@@ -39,6 +48,16 @@ public class List<T> implements TDAList<T>{
             iterator.setNext(newNode);
         }
         size++;
+    }
+
+    /**
+     * Inserta un nuevo elemento <i>e</i> en la posición <i>i</i>.
+     *
+     * @param e el elemento a insertar.
+     * @throws IndexOutOfBoundsException si el índice está fuera de rango.
+     */
+    public void add(T e) throws IndexOutOfBoundsException {
+        add(size,e);
     }
 
     /**
@@ -74,10 +93,32 @@ public class List<T> implements TDAList<T>{
     }
 
     /**
+     * Elimina el elemento en la posición <i>i</i>.
+     *
+     * @param e el elemento a eliminar.
+     * @throws NullPointerException si el elemento no se encuentra en la lista.
+     */
+    public int get(T e) throws NullPointerException{
+        Node aux = head;
+        int indice = -1;
+        if(isEmpty()){
+            throw new NullPointerException();
+        }
+
+        for(int i = 0; i < size; i++){
+            if(aux.getElement().equals(e)){
+                indice = i;
+            }
+            aux = aux.getNext();
+        }
+        return indice;
+    }
+
+    /**
      * Obtiene el elemento en la posición <i>i</i>.
      *
      * @param i el índice a obtener elemento.
-     * @throws IndexOutOfBoundException si el índice está fuera de rango.
+     * @throws IndexOutOfBoundsException si el índice está fuera de rango.
      */
     @Override
     public T get(int i) throws IndexOutOfBoundsException {
@@ -86,13 +127,13 @@ public class List<T> implements TDAList<T>{
         }else if(isEmpty()){
             return null;
         }else if(i == 0){
-            return (T) head.getElement();
+            return head.getElement();
         }else{
             Node aux = head;
             for(int j = 0; j < i; j++){
                 aux = aux.getNext();
             }
-            return (T) aux.getElement();
+            return aux.getElement();
         }
     }
 
@@ -110,12 +151,12 @@ public class List<T> implements TDAList<T>{
      * Elimina el elemento en la posición <i>i</i>.
      *
      * @param e el elemento a eliminar.
-     * @throws IndexOutOfBoundException si el índice está fuera de rango.
+     * @throws NullPointerException si el elemento no se encuentra en la lista.
      */
-    public void remove(T e) throws IndexOutOfBoundsException{
+    public void remove(T e) throws NullPointerException{
         Node aux = head;
         if(isEmpty()){
-            throw new IndexOutOfBoundsException();
+            throw new NullPointerException();
         }
 
         for(int i = 0; i < size; i++){
@@ -132,7 +173,7 @@ public class List<T> implements TDAList<T>{
      *
      * @param i el índice del elemento a eliminar.
      * @return el elemento eliminado.
-     * @throws IndexOutOfBoundException si el índice está fuera de rango.
+     * @throws IndexOutOfBoundsException si el índice está fuera de rango.
      */
     @Override
     public T remove(int i) throws IndexOutOfBoundsException {
@@ -142,7 +183,7 @@ public class List<T> implements TDAList<T>{
         T element;
         // Eliminar la cabeza
         if(i == 0){
-            element = (T) head.getElement();
+            element = head.getElement();
             if(size == 1){
                 head = null;
             }else{
@@ -153,7 +194,7 @@ public class List<T> implements TDAList<T>{
             for(int j = 0; j < i-1; j++){
                 aux = aux.getNext();
             }
-            element = (T) aux.getNext().getElement();
+            element = aux.getNext().getElement();
             aux.setNext(aux.getNext().getNext());
 
         }
@@ -203,7 +244,7 @@ public class List<T> implements TDAList<T>{
 
 
     // Clase Node encargada de implementar la lista simplemente ligada.
-    public class Node{
+    public class Node implements Serializable{
 
         T element;
         Node next;
@@ -252,6 +293,40 @@ public class List<T> implements TDAList<T>{
             Node aux = head;
             while (aux != null) {
                 result.append(aux.getElement()).append(" ");
+                aux = aux.getNext();
+            }
+            return result.substring(0, result.length() - 1);
+        }
+        return "La lista es vacía";
+    }
+
+    /**
+     * Método para imprimir la lista simplemente ligada.
+     * @return String - con la cadena de elementos que contiene la lista y si es vacía, lo indica.
+     */
+    public String toStringAux() {
+        if(!isEmpty()) {
+            StringBuilder result = new StringBuilder();
+            Node aux = head;
+            while (aux != null) {
+                result.append(aux.getElement()).append(", ");
+                aux = aux.getNext();
+            }
+            return result.substring(0, result.length() - 1);
+        }
+        return "La lista es vacía";
+    }
+
+    /**
+     * Método para imprimir la lista simplemente ligada.
+     * @return String - con la cadena de elementos que contiene la lista y si es vacía, lo indica.
+     */
+    public String toStringAuxx() {
+        if(!isEmpty()) {
+            StringBuilder result = new StringBuilder();
+            Node aux = head;
+            while (aux != null) {
+                result.append(aux.getElement()).append("\n");
                 aux = aux.getNext();
             }
             return result.substring(0, result.length() - 1);

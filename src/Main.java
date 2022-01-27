@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
@@ -9,12 +10,12 @@ public class Main {
         List<String> jugadores = new List<>();
 
         int opc,numJugadores=0;
-        boolean volver = true, excep, repe=true;
+        boolean volver = true, excep, repe;
 
         try {
             System.out.println("\t*** BIENVENIDO ***");
-            do {
-                do {
+            //do {
+                /*do {
                     try {
                         System.out.println("\nIngresa el numero de jugadores (1 - 4 jugadores)");
                         numJugadores = in.nextInt();
@@ -32,44 +33,48 @@ public class Main {
                 }while (repe);
                 for (int i=1; i<=numJugadores; i++){
                     jugadores.add(0, "Jugador " + i);
-                }
-                Juego juego = new Juego(jugadores);
-                juego.iniciar();
-                System.out.println("\nEl juego terminó...\t¿Qué deseas hacer?\n");
+                }*/
+                Juego juego = new Juego();
+                //juego.iniciar();
+                //System.out.println("\nEl juego terminó...\t¿Qué deseas hacer?\n");
 
                 excep = true;
                 while (excep) {
                     try {
-                        System.out.println("1. Volver a jugar");
+                        System.out.println("\n\t\t*** Menu ***");
+                        System.out.println("--------------------------------------------");
+                        System.out.println("1. Jugar");
                         System.out.println("2. Mostrar estadisticas");
                         System.out.println("3. Salir");
+                        System.out.println("--------------------------------------------");
                         System.out.println("Ingresa una opción");
 
                         opc = on.nextInt();
 
                         switch (opc) {
                             case 1:
-                                volver = true;
-                                excep = false;
+                                juego.iniciar();
+                                System.out.println("\nEl juego terminó...\t¿Qué deseas hacer?\n");
                                 break;
                             case 2:
-                                System.out.println("estadisticas");
+                                System.out.println("Aqui estan las estadisticas");
+                                System.out.println(juego.obtenerEstadisticas());
                                 break;
                             case 3:
-                                volver = false;
+                                System.out.println("Ayoos :3");
+                                //volver = false;
                                 excep = false;
                                 break;
                             default:
                                 System.out.println("Elige una opción del menu plis :c\n");
                                 break;
                         }
-                    } catch (Exception e) {
-                        System.out.println("\tDebes ingresar un número\tIntentalo de nuevo\n");
+                    } catch (InputMismatchException e) {
+                        System.out.println(e+"\tDebes ingresar un número\tIntentalo de nuevo\n");
                         on.next();
-                        excep = true;
                     }
                 }
-            } while (volver);
+            //} while (volver);
         }catch (Exception e){
             e.printStackTrace();
             System.out.println("Ingresa un diccionario válido");

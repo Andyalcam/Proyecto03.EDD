@@ -12,7 +12,7 @@ public interface TDAList<T>{
 	 * Inserta un nuevo elemento <i>e</i> en la posición <i>i</i>.
 	 * @param i la posición donde agregar el elemento.
 	 * @param e el elemento a insertar.
-	 * @throws IndexOutOfBoundException si el índice está fuera de rango.
+	 * @throws IndexOutOfBoundsException si el índice está fuera de rango.
 	 */
 	public void add(int i, T e) throws IndexOutOfBoundsException;
 
@@ -31,7 +31,7 @@ public interface TDAList<T>{
 	/**
 	 * Obtiene el elemento en la posición <i>i</i>.
 	 * @param i el índice a obtener elemento.
-	 * @throws IndexOutOfBoundException si el índice está fuera de rango.
+	 * @throws IndexOutOfBoundsException si el índice está fuera de rango.
 	 */
 	public T get(int i) throws IndexOutOfBoundsException;
 
@@ -45,7 +45,7 @@ public interface TDAList<T>{
 	 * Elimina el elemento en la posición <i>i</i>.
 	 * @param i el índice del elemento a eliminar.
 	 * @return el elemento eliminado.
-	 * @throws IndexOutOfBoundException si el índice está fuera de rango.
+	 * @throws IndexOutOfBoundsException si el índice está fuera de rango.
 	 */
 	public T remove(int i) throws IndexOutOfBoundsException;
 

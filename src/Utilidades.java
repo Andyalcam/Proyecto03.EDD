@@ -3,30 +3,24 @@ import java.io.ObjectInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Scanner;
 /**
 * Clase de utilidades para mantener consistencia de los objetos guardados
 * @author Andrea Alvarado Camacho
 * @author Alfonso Mondragón Segoviano
 * @version 1.2
 */
-public class Utilidades {
+public class Utilidades<T> {
 
-	String[] arreglo = new String[0];
+	List<T> puntajeList = new List<>();
 
 	/**
 	* Metodo para agregar String a un arreglo
 	* @param elem - cadena de String
 	* @return arreglo de tipo String
 	*/
-	public String[] agregarArreglo(String elem){
-		String[] nuevo = new String[arreglo.length+1];
-		for(int i=0; i<arreglo.length; i++){
-			nuevo[i] = arreglo[i];
-		}
-		nuevo[nuevo.length-1] = elem;
-		arreglo = nuevo;
-		return arreglo;
+	public List<T> agregarArreglo(T elem){
+		puntajeList.add(elem);
+		return puntajeList;
 	}
 
 	/**
@@ -34,7 +28,7 @@ public class Utilidades {
 	* @param ruta_del_archivo - nombre del archivo
 	* @return arreglo de tipo String
 	*/
-	public String[] leerObjetoArchivo(String ruta_del_archivo){
+	public List<T> leerObjetoArchivo(String ruta_del_archivo){
 		ObjectInputStream lect = null;
 
 		try{
@@ -43,7 +37,7 @@ public class Utilidades {
 			do{
 				objeto = lect.readObject();
 				if(objeto != null){
-					agregarArreglo((String)objeto);
+					agregarArreglo((T) objeto);
 				}
 			}while (objeto != null);
 		}catch(java.lang.ClassNotFoundException e){
@@ -57,7 +51,7 @@ public class Utilidades {
 				}catch(IOException e){}
 			}
 		}
-		return arreglo;
+		return puntajeList;
 	}
 
 	/**
@@ -65,12 +59,12 @@ public class Utilidades {
 	* @param ruta_del_archivo - nombre del archivo
 	* @param arreglo - arreglo del tipo de objeto deseado a escribir
 	*/
-	public void escribirObjetosArchivo(String ruta_del_archivo, Object[] arreglo){
+	public void escribirObjetosArchivo(String ruta_del_archivo, List<T> arreglo){
 		ObjectOutputStream escritor = null;
 		try{
 			escritor = new ObjectOutputStream(new FileOutputStream(ruta_del_archivo));
-			for(int i=0; i<arreglo.length; i++){
-				escritor.writeObject(arreglo[i]);
+			for(int i=0; i<puntajeList.size(); i++){
+				escritor.writeObject(puntajeList.get(i));
 			}
 		}catch(IOException e){
 			System.out.println("Error en la grabacion: "+e);
